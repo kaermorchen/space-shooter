@@ -1,5 +1,4 @@
 import { Scene } from "phaser";
-import { gameHeight, gameWidth } from "../constants";
 
 export class Preloader extends Scene {
   constructor() {
@@ -13,8 +12,8 @@ export class Preloader extends Scene {
 
     const progressBarBackground = this.add
       .rectangle(
-        (gameWidth - progressBarWidth) / 2,
-        (gameHeight - progressBarHeight) / 2,
+        (this.scale.width - progressBarWidth) / 2,
+        (this.scale.height - progressBarHeight) / 2,
         progressBarWidth,
         progressBarHeight,
         0xfffffff,
@@ -32,14 +31,17 @@ export class Preloader extends Scene {
       .setOrigin(0);
 
     this.load.on("progress", (value: number) => {
-      progressBar.width = 396 * value;
+      progressBar.width = (progressBarWidth - progressBarBorder * 2) * value;
     });
   }
 
   preload() {
-    this.load.setPath("assets");
+    this.load.setPath("assets/images/Shoot`em Up/");
 
-    this.load.image("logo", "logo.png");
+    this.load.image({
+      key: "player",
+      url: "SpaceShips_Player-0001.png",
+    });
   }
 
   create() {
