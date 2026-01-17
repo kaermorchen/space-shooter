@@ -5,10 +5,6 @@ export class Boot extends Scene {
     super("Boot");
   }
 
-  preload() {
-    this.load.image("background", "assets/images/piiixl/bg.gif");
-  }
-
   create() {
     this.scene.start("Preloader");
   }

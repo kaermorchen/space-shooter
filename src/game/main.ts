@@ -1,19 +1,18 @@
 import { Boot } from "./scenes/Boot";
-import { GameOver } from "./scenes/GameOver";
 import { Game as MainGame } from "./scenes/Game";
-import { MainMenu } from "./scenes/MainMenu";
 import { AUTO, Game, Scale } from "phaser";
 import { Preloader } from "./scenes/Preloader";
+import { gameWidth, gameHeight } from "./constants";
 
 //  Find out more information about the Game Config at:
 //  https://docs.phaser.io/api-documentation/typedef/types-core#gameconfig
 const config: Phaser.Types.Core.GameConfig = {
   type: AUTO,
-  width: 1024,
-  height: 768,
+  width: gameWidth,
+  height: gameHeight,
   parent: "game-container",
   backgroundColor: "#160c1e",
-  scene: [Boot, Preloader, MainMenu, MainGame, GameOver],
+  scene: [Boot, Preloader, MainGame],
   roundPixels: true,
   pixelArt: true,
   autoCenter: Scale.CENTER_BOTH,
@@ -22,7 +21,7 @@ const config: Phaser.Types.Core.GameConfig = {
     default: "arcade",
     arcade: {
       gravity: { x: 0, y: 0 },
-      debug: false,
+      debug: true,
     },
   },
 };
