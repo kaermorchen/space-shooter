@@ -4,13 +4,23 @@ import { Asteroid } from "../entities/Asteroid";
 
 export class Game extends Scene {
   enemySpawnTimer: Phaser.Time.TimerEvent;
+  asteroids: Phaser.Physics.Arcade.Group;
 
   constructor() {
     super("Game");
   }
 
   create() {
-    new Player(this);
+    const player = new Player(this);
+
+    this.asteroids = this.physics.add.group();
+    this.physics.add.collider(
+      player,
+      this.asteroids,
+      this.hitAsteroid,
+      undefined,
+      this,
+    );
 
     this.enemySpawnTimer = this.time.addEvent({
       delay: 300,
@@ -20,8 +30,6 @@ export class Game extends Scene {
     });
   }
 
-  // update(ts: DOMHighResTimeStamp, dt: number) {}
-
   spawnEnemy() {
     const color = Phaser.Utils.Array.GetRandom<"gray" | "red">(["gray", "red"]);
     const size = Phaser.Utils.Array.GetRandom<"s" | "m" | "l">(["s", "m", "l"]);
@@ -30,6 +38,10 @@ export class Game extends Scene {
       y: -38,
     };
 
-    new Asteroid(this, color, size, position);
+    this.asteroids.add(new Asteroid(this, color, size, position));
+  }
+
+  hitAsteroid() {
+    this.scene.restart();
   }
 }
