@@ -48,7 +48,7 @@ export class Asteroid extends GameObjects.Container {
   update(ts: DOMHighResTimeStamp, dt: number) {
     this.y += this.#speed;
 
-    if (this.y > this.scene.scale.height) {
+    if (this.scene && this.y > this.scene.scale.height) {
       this.destroy();
     }
   }

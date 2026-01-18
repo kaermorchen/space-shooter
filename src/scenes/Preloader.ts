@@ -44,6 +44,11 @@ export class Preloader extends Scene {
     });
 
     this.load.image({
+      key: "ui",
+      url: "UI_sprites-0001.png",
+    });
+
+    this.load.image({
       key: "enemy_spaceships",
       url: "SpaceShips_Enemy-0001.png",
     });
@@ -59,6 +64,11 @@ export class Preloader extends Scene {
     const playerTexture = this.textures.get("player_spaceships");
 
     playerTexture.add("gray_spaceship", 0, 12, 22, 38, 40);
+
+    // UI
+    const uiTexture = this.textures.get("ui");
+
+    uiTexture.add("heart", 0, 3, 82, 13, 11);
 
     // Enemy
     const enemyTexture = this.textures.get("enemy_spaceships");

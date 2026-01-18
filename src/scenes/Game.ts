@@ -1,6 +1,7 @@
 import Phaser, { Scene } from "phaser";
 import { Player } from "../entities/Player";
 import { Asteroid } from "../entities/Asteroid";
+import { Lives } from "../ui/Lives";
 
 export class Game extends Scene {
   enemySpawnTimer: Phaser.Time.TimerEvent;
@@ -11,10 +12,14 @@ export class Game extends Scene {
   }
 
   create() {
+    this.registry.set("lives", 3);
+
+    new Lives(this);
+
     const player = new Player(this);
 
     this.asteroids = this.physics.add.group();
-    this.physics.add.collider(
+    this.physics.add.overlap(
       player,
       this.asteroids,
       this.hitAsteroid,
@@ -41,7 +46,22 @@ export class Game extends Scene {
     this.asteroids.add(new Asteroid(this, color, size, position));
   }
 
-  hitAsteroid() {
+  hitAsteroid(_: Player, asteroid: Asteroid) {
+    asteroid.destroy();
+
+    this.takeDamage();
+  }
+
+  takeDamage() {
+    this.registry.inc("lives", -1);
+
+    if (this.registry.get("lives") < 1) {
+      this.gameOver();
+    }
+  }
+
+  gameOver() {
+    this.physics.pause();
     this.scene.restart();
   }
 }
