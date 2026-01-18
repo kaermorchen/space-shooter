@@ -1,10 +1,20 @@
-import { GameObjects, Scene } from "phaser";
+import Phaser, { GameObjects, Scene } from "phaser";
+import { Position } from "../types";
 
 export class Enemy extends GameObjects.Container {
   #shipSprite: GameObjects.Sprite;
+  #speed: number = 1.4;
 
-  constructor(scene: Scene, size: "xs" | "s" | "m" | "l") {
-    super(scene, scene.scale.width / 2, scene.scale.height * 0.7);
+  constructor(scene: Scene, size: "xs" | "s" | "m" | "l", position: Position) {
+    super(scene, position.x, position.y);
+
+    this.scene.add.existing(this);
+    this.scene.physics.add.existing(this);
+
+    if (this.body instanceof Phaser.Physics.Arcade.Body) {
+      this.body.setSize(32, 32);
+      this.body.setOffset(-16, -16);
+    }
 
     this.scene.add.existing(this);
 
@@ -13,5 +23,22 @@ export class Enemy extends GameObjects.Container {
       .setFrame(`enemy_${size}`);
 
     this.add(this.#shipSprite);
+
+    this.scene.events.on(Phaser.Scenes.Events.UPDATE, this.update, this);
+    this.once(
+      Phaser.GameObjects.Events.DESTROY,
+      () => {
+        this.scene.events.off(Phaser.Scenes.Events.UPDATE, this.update, this);
+      },
+      this,
+    );
+  }
+
+  update(ts: DOMHighResTimeStamp, dt: number) {
+    this.y += this.#speed;
+
+    if (this.y > this.scene.scale.height) {
+      this.destroy();
+    }
   }
 }
