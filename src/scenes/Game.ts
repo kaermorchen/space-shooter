@@ -11,6 +11,8 @@ export class Game extends Scene {
   asteroidSpawnTimer: Phaser.Time.TimerEvent;
   asteroids: Phaser.Physics.Arcade.Group;
 
+  player: Player;
+
   constructor() {
     super("Game");
   }
@@ -20,13 +22,13 @@ export class Game extends Scene {
 
     new Lives(this);
 
-    const player = new Player(this);
+    this.player = new Player(this);
 
     // Asteroids
     this.asteroids = this.physics.add.group();
 
     this.physics.add.overlap(
-      player,
+      this.player,
       this.asteroids,
       this.hitToPlayer,
       undefined,
@@ -44,7 +46,7 @@ export class Game extends Scene {
     this.enemies = this.physics.add.group();
 
     this.physics.add.overlap(
-      player,
+      this.player,
       this.enemies,
       this.hitToPlayer,
       undefined,
@@ -57,6 +59,22 @@ export class Game extends Scene {
       callbackScope: this,
       loop: true,
     });
+
+    this.physics.add.overlap(
+      this.player.bullets,
+      this.asteroids,
+      this.hitBullet,
+      undefined,
+      this,
+    );
+
+    this.physics.add.overlap(
+      this.player.bullets,
+      this.enemies,
+      this.hitBullet,
+      undefined,
+      this,
+    );
   }
 
   spawnAsteroid() {
@@ -74,6 +92,11 @@ export class Game extends Scene {
     entity.destroy();
 
     this.takeDamage();
+  }
+
+  hitBullet(bullet, entity: { destroy(): void }) {
+    this.player.killBullet(bullet);
+    entity.destroy();
   }
 
   spawnEnemy() {

@@ -57,6 +57,11 @@ export class Preloader extends Scene {
       key: "asteroids",
       url: "Asteroids-0001.png",
     });
+
+    this.load.image({
+      key: "bullets",
+      url: "Bullets-0001.png",
+    });
   }
 
   create() {
@@ -64,6 +69,11 @@ export class Preloader extends Scene {
     const playerTexture = this.textures.get("player_spaceships");
 
     playerTexture.add("gray_spaceship", 0, 12, 22, 38, 40);
+
+    // Bullets
+    const bulletTexture = this.textures.get("bullets");
+
+    bulletTexture.add("drupal_small_blue", 0, 180, 17, 7, 14);
 
     // UI
     const uiTexture = this.textures.get("ui");
