@@ -12,6 +12,7 @@ const bodies: Record<Size, number> = {
 export class Asteroid extends GameObjects.Container {
   #sprite: GameObjects.Sprite;
   #speed: number = 1.3;
+  scoreBonus: number = 10;
 
   constructor(
     scene: Scene,

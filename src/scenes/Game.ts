@@ -3,6 +3,7 @@ import { Player } from "../entities/Player";
 import { Asteroid } from "../entities/Asteroid";
 import { Lives } from "../ui/Lives";
 import { Enemy } from "../entities/Enemy";
+import { Score } from "../ui/Score";
 
 export class Game extends Scene {
   enemySpawnTimer: Phaser.Time.TimerEvent;
@@ -19,8 +20,10 @@ export class Game extends Scene {
 
   create() {
     this.registry.set("lives", 3);
+    this.registry.set("score", 0);
 
     new Lives(this);
+    new Score(this);
 
     this.player = new Player(this);
 
@@ -96,6 +99,9 @@ export class Game extends Scene {
 
   hitBullet(bullet, entity: { destroy(): void }) {
     this.player.killBullet(bullet);
+
+    this.registry.inc("score", entity.scoreBonus ?? 0);
+
     entity.destroy();
   }
 

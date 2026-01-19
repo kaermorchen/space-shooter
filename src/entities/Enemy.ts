@@ -3,6 +3,7 @@ import { Position } from "../types";
 
 export class Enemy extends GameObjects.Container {
   #shipSprite: GameObjects.Sprite;
+  scoreBonus: number = 30;
 
   constructor(scene: Scene, size: "xs" | "s" | "m" | "l", position: Position) {
     super(scene, position.x, position.y);
