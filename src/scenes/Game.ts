@@ -2,9 +2,13 @@ import Phaser, { Scene } from "phaser";
 import { Player } from "../entities/Player";
 import { Asteroid } from "../entities/Asteroid";
 import { Lives } from "../ui/Lives";
+import { Enemy } from "../entities/Enemy";
 
 export class Game extends Scene {
   enemySpawnTimer: Phaser.Time.TimerEvent;
+  enemies: Phaser.Physics.Arcade.Group;
+
+  asteroidSpawnTimer: Phaser.Time.TimerEvent;
   asteroids: Phaser.Physics.Arcade.Group;
 
   constructor() {
@@ -18,24 +22,44 @@ export class Game extends Scene {
 
     const player = new Player(this);
 
+    // Asteroids
     this.asteroids = this.physics.add.group();
+
     this.physics.add.overlap(
       player,
       this.asteroids,
-      this.hitAsteroid,
+      this.hitToPlayer,
+      undefined,
+      this,
+    );
+
+    this.asteroidSpawnTimer = this.time.addEvent({
+      delay: 2000,
+      callback: this.spawnAsteroid,
+      callbackScope: this,
+      loop: true,
+    });
+
+    // Enemies
+    this.enemies = this.physics.add.group();
+
+    this.physics.add.overlap(
+      player,
+      this.enemies,
+      this.hitToPlayer,
       undefined,
       this,
     );
 
     this.enemySpawnTimer = this.time.addEvent({
-      delay: 300,
+      delay: 1000,
       callback: this.spawnEnemy,
       callbackScope: this,
       loop: true,
     });
   }
 
-  spawnEnemy() {
+  spawnAsteroid() {
     const color = Phaser.Utils.Array.GetRandom<"gray" | "red">(["gray", "red"]);
     const size = Phaser.Utils.Array.GetRandom<"s" | "m" | "l">(["s", "m", "l"]);
     const position = {
@@ -46,10 +70,25 @@ export class Game extends Scene {
     this.asteroids.add(new Asteroid(this, color, size, position));
   }
 
-  hitAsteroid(_: Player, asteroid: Asteroid) {
-    asteroid.destroy();
+  hitToPlayer(_: unknown, entity: { destroy(): void }) {
+    entity.destroy();
 
     this.takeDamage();
+  }
+
+  spawnEnemy() {
+    const size = Phaser.Utils.Array.GetRandom<"xs" | "s" | "m" | "l">([
+      "xs",
+      "s",
+      "m",
+      "l",
+    ]);
+    const position = {
+      x: Phaser.Math.Between(0, this.scale.width),
+      y: -38,
+    };
+
+    this.enemies.add(new Enemy(this, size, position));
   }
 
   takeDamage() {

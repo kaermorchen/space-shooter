@@ -3,7 +3,6 @@ import { Position } from "../types";
 
 export class Enemy extends GameObjects.Container {
   #shipSprite: GameObjects.Sprite;
-  #speed: number = 1.4;
 
   constructor(scene: Scene, size: "xs" | "s" | "m" | "l", position: Position) {
     super(scene, position.x, position.y);
@@ -34,10 +33,13 @@ export class Enemy extends GameObjects.Container {
     );
   }
 
-  update(ts: DOMHighResTimeStamp, dt: number) {
-    this.y += this.#speed;
+  update(time: DOMHighResTimeStamp) {
+    if (this.body) {
+      this.body.velocity.x = Math.sin(time / 200) * 200;
+      this.body.velocity.y = 200;
+    }
 
-    if (this.y > this.scene.scale.height) {
+    if (this.scene && this.y > this.scene.scale.height) {
       this.destroy();
     }
   }
